@@ -1,0 +1,24 @@
+The Iterative refocus Gimp plug-in can be used to sharpen images acquired by
+a defocused camera, blurred with gaussian or motion blur or any combination
+of these degradations. In cases of severe blur it produces much better
+results than plug-ins such as sharpen or unsharp mask.
+
+There are a few nice features of this plug-in, especially adaptive/static area
+smoothing used to remove the so called "ringing" effect introduced by edges in
+the image and effects introduced by noise. Two boundary conditions can be used
+(mirror boundaries / periodical boundaries). The algorithm is based on finding
+the minimum of the error function using Hopfield neural network.
+There are a few NOT nice features of this plug-in as well, namely its memory and
+CPU requirements.
+
+This plug-in has a preview that helps you select the best parameters.
+
+This version of the plug-in needs the Gtk+-1.2 libraries.
+
+I hope you like the plug-in. If you have any problems or requests please mail me.
+
+Lukas Kunc <Lukas.Kunc@seznam.cz>
+
+---
+Thanks to Ernst Lippe <ernstl@users.sourceforge.net> for making his Refocus
+Gimp plug-in and all authors of the GIMP.

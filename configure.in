@@ -1,0 +1,53 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(README)
+
+AM_INIT_AUTOMAKE(refocus-it, 1.0.2)
+
+AC_PROG_CC
+AC_CHECK_PROG(GCC3, gcc3, gcc3)
+
+if test "$GCC3" ; then
+   CC=$GCC3
+   AC_MSG_RESULT([using $CC as compiler])
+fi
+
+# If we have gcc set the CFLAGS
+# This is done here because otherwise configure would use
+# these flags for compiling test-programs.
+if test "$GCC" = yes; then
+   CFLAGS="-Wall -ansi -pedantic $DEBUGGER -fomit-frame-pointer -O3 -funroll-all-loops"
+fi
+
+AC_STDC_HEADERS
+AC_PROG_RANLIB
+
+AC_ARG_ENABLE(inlines, [  --enable-inlines        Use inlines instead of macros [default=no]], enable_inlines=yes, enable_inlines=no)
+
+AC_ARG_ENABLE(debug, [  --enable-debug          Show debugging output [default=no]], enable_debug=yes, enable_debug=no)
+
+AC_ARG_ENABLE(doubles, [  --enable-doubles        Use doubles instead of floats [default=no]], enable_doubles=yes, enable_doubles=no)
+
+if test x$enable_debug = xno ; then
+	AC_DEFINE(NDEBUG)
+else
+	DEBUGGER=-ggdb
+fi
+
+if test x$enable_inlines = xyes ; then
+	AC_DEFINE(USE_INLINES)
+	AC_C_INLINE
+fi
+
+if test x$enable_doubles = xyes ; then
+	AC_DEFINE(USE_DOUBLES)
+fi
+
+AM_PATH_GIMP(1.2.0)
+AM_PATH_GTK(1.2.0)
+AM_PATH_GLIB(1.2.0)
+
+AC_CHECK_HEADER([libgimp/stdplugins-intl.h], [AC_DEFINE([HAVE_STDPLUGINS_INTL])])
+
+AC_OUTPUT([Makefile ])
+

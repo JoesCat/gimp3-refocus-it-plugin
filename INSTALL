@@ -1,0 +1,29 @@
+
+Iterative Refocus
+     _________________________________________________________________
+
+Installation
+
+Requirements
+
+For installing Iterative refocus you need the following:
+
+     * The Gimp, of course. This plug-in should work with versions > 1.2.
+     * Gtk+-1.2 plus pkg-config.
+
+   Run ./configure in the top-level directory.
+
+   Then run make install-bin if you want to install the plug-in under
+   your home directory or make install-admin-bin if you want to install
+   the plug-in under your Gimp's system directory.
+
+
+For installing Iterative refocus on Win32:
+
+   Use the Makefile.msc. Don't forget to run the Vcvars32.bat batch file
+   before using the Makefile.msc. It will probably be necessary to
+   update some paths in Makefile.msc. Run nmake instal to install the 
+   plug-in.
+
+     _________________________________________________________________
+

@@ -1,0 +1,15 @@
+Overview of Changes in iterative_refocus 1.0.2:
+==================================
+
+* Updated docs
+* Reformat the code
+* Added examples in the demo/ direcotry
+* renamed to refocus-it because of SourceForge requirements
+
+Overview of Changes in iterative_refocus 1.0.1:
+==================================
+
+* Makefile for Microsoft Visual C++ added
+* Improvements in support of defocus blur
+* Added support for regular motion and gaussian blur
+* Images with alpha channel supported

@@ -1,0 +1,43 @@
+Examples of using the iterative_refocus plug-in.
+
+File defocus.jpg is a snapshot of text document acquired by a defocused
+camera. The blur radius is about 6.5.
+
+File restored1.jpg shows result of restoration with following parameters:
+
+ * Radius:		6.50
+ * Gauss:		0.00
+ * Motion size:		0.00
+ * Motion angle:	0.00
+ * Noise:		1000.00
+ * Iterations:		200
+ * Boundary:		mirror boundary
+ * Smoothness:		100.0
+ * Area size:		3
+ * Adaptive smoothing:  yes
+
+File restored2.jpg shows result of restoration with following parameters:
+
+ * Radius:		6.50
+ * Gauss:		0.00
+ * Motion size:		0.00
+ * Motion angle:	0.00
+ * Noise:		0.00
+ * Iterations:		200
+ * Boundary:		mirror boundary
+
+File restored3.jpg shows result of restoration with following parameters:
+
+ * Radius:		6.50
+ * Gauss:		0.00
+ * Motion size:		0.00
+ * Motion angle:	0.00
+ * Noise:		1000.00
+ * Iterations:		200
+ * Boundary:		mirror boundary
+ * Smoothness:		0.0
+ * Area size:		3
+ * Adaptive smoothing:  yes
+
+Notice the benefit of adaptive area smoothing.
+
