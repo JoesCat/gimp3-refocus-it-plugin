@@ -1,4 +1,5 @@
-This plug-in was written by Lukas Kunc <Lukas.Kunc@seznam.cz>.
+This plug-in and command-line version of refocus-it was written by
+Lukas Kunc <Lukas.Kunc@seznam.cz>.
 
 Some of the code in the plug-in was borrowed from the Gimp Sharpen
 plug-in by Michael Sweet and from Gimp Refocus blugin by Ernst Lippe.

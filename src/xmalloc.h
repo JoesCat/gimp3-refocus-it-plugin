@@ -17,23 +17,18 @@
  *
  */
 
-#include <stdio.h>
-#include "xmalloc.h"
+#ifndef _XMALLOC_H
+#define _XMALLOC_H
 
-void* xmalloc(size_t size)
-{
-	void *mem;
-	mem = malloc(size);
-	if (!mem) {
-		fprintf(stderr, "allocation of %lu bytes failed\n", (unsigned long)size);
-		exit(1);
-	}
-	return mem;
-}
+#include <stdlib.h>
+#include "compiler.h"
 
-void xfree(void* mem)
-{
-	free(mem);
-}
+C_DECL_BEGIN
 
+void* xmalloc(size_t size);
+void xfree(void* mem);
+char* xstrdup(const char* str);
 
+C_DECL_END
+
+#endif

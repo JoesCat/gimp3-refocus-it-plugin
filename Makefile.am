@@ -1,37 +1,28 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES=@GTK_CFLAGS@ @GIMP_CFLAGS@
+if REFOCUS_CMDLINE
+TARGET_CMD      = cmd-line
+else
+TARGET_CMD      =
+endif
 
-bin_PROGRAMS = refocus-it
+if REFOCUS_GIMP
+TARGET_GIMP     = gimp-plugin help
+else
+TARGET_GIMP     =
+endif
 
-noinst_HEADERS=blur.h compiler.h convmask.h image.h threshold.h xmalloc.h boundary.h hopfield.h lambda.h weights.h
+SUBDIRS = po src doc $(TARGET_GIMP) $(TARGET_CMD)
 
-refocus_it_SOURCES = blur.c boundary.c convmask.c hopfield.c image.c lambda.c main.c threshold.c weights.c xmalloc.c
-
-refocus_it_LDADD = @GTK_LIBS@ -lgimp -lgimpui
-refocus_it_DEPENDENCIES=
-
-EXTRA_DIST=Makefile.msc demo
-
-install-bin: refocus-it
-	@if test "x@GIMPTOOL@" = "x" ; then \
-		echo "Warning: configure did not find gimptool" ; \
-		echo "install refocus-it manually in your plug-in directory" ; \
-		echo "e.g.: cp refocus-it ~/.gimp-1.2/plug-ins" ; \
-	else \
-		@GIMPTOOL@ --install-bin refocus-it ; \
-	fi
-
-install-admin-bin: refocus-it
-	@if test "x@GIMPTOOL@" = "x" ; then \
-		echo "Warning: configure did not find gimptool" ; \
-		echo "install refocus-it manually in your plug-in directory" ; \
-		echo "e.g.: install refocus-it /usr/local/lib/gimp-1.2/plug-ins" ; \
-	else \
-		@GIMPTOOL@ --install-admin-bin refocus-it ; \
-	fi
-
-%.s: %.c
-	${CC} ${CFLAGS} -S $< -o $@
+EXTRA_DIST = \
+	BUGS			\
+	autogen.sh		\
+        intltool-extract.in     \
+        intltool-merge.in       \
+        intltool-update.in
 
 
+DISTCLEANFILES = \
+	intltool-extract	\
+	intltool-merge		\
+	intltool-update

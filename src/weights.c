@@ -81,7 +81,7 @@ void weights_destroy(weights_t* weights)
 void weights_print(weights_t* weights, FILE* file)
 {
 	int i, j;
-	fprintf(file, "WEIGHTS: (rxnz, rynz)=(%d,%d)\n", weights->rxnz, weights->rynz);
+	fprintf(file, "%s (rxnz, rynz)=(%d,%d)\n", "WEIGHTS:", weights->rxnz, weights->rynz);
 	for (j = -weights->r2; j <= weights->r2; j++)
 	{
 		for (i = -weights->r2; i <= weights->r2; i++)

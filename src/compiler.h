@@ -17,17 +17,62 @@
  *
  */
 
-#ifndef _XMALLOC_H
-#define _XMALLOC_H
+#ifndef _COMPILER_CONF_H
+#define _COMPILER_CONF_H
 
-#include <stdlib.h>
-#include "compiler.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
-C_DECL_BEGIN
+#include <math.h>
 
-void* xmalloc(size_t size);
-void xfree(void* mem);
+#ifdef USE_DOUBLES
 
-C_DECL_END
+typedef double       real_t;
+#define R(x)         (x)
+
+#else
+
+typedef float        real_t;
+#define R(x)         (x##F)
 
 #endif
+
+#ifndef M_PI
+#define M_PI 3.1415926535897932384626433832795
+#endif
+
+#ifdef USE_INLINES
+
+#undef INLINE_MACRO
+#ifndef INLINE
+#if defined(MSC_VER)
+#define INLINE __inline
+#elif defined(inline) || defined(__cplusplus)
+#define INLINE inline
+#endif
+#endif
+
+#else
+
+#undef INLINE
+#define INLINE_MACRO
+
+#endif
+
+#ifdef __cplusplus
+#define C_DECL_BEGIN extern "C" {
+#define C_DECL_END }
+#else
+#define C_DECL_BEGIN
+#define C_DECL_END
+#endif
+
+#ifdef USE_BACKSLASH
+#define OS_SLASH '\\'
+#else
+#define OS_SLASH '/'
+#endif
+
+#endif
+

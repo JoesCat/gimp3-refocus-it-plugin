@@ -34,14 +34,15 @@ typedef struct {
 } image_t;
 
 
+void image_init(image_t* image);
 image_t* image_create(image_t* image, int x, int y);
 image_t* image_create_copyparam(image_t* image, image_t* src);
 void image_destroy(image_t* image);
 
-int image_load_png_file(image_t* image, FILE* file);
-int image_save_png_file(image_t* image, FILE* file);
-int image_load_png(image_t* image, const char* name);
-int image_save_png(image_t* image, const char* name);
+int image_load_pnm_file(image_t* imageR, image_t* imageG, image_t* imageB, int* bpp, FILE* file);
+int image_save_pnm_file(image_t* imageR, image_t* imageG, image_t* imageB, int binary, FILE* file);
+int image_load_pnm(image_t* imageR, image_t* imageG, image_t* imageB, int* bpp, const char* name);
+int image_save_pnm(image_t* imageR, image_t* imageG, image_t* imageB, int binary, const char* name);
 void image_load_bytes_gray(image_t* image, unsigned char* bytes);
 void image_load_bytes_rgb(image_t* image, unsigned char* bytes, unsigned int channel);
 

@@ -17,53 +17,34 @@
  *
  */
 
-#ifndef _COMPILER_CONF_H
-#define _COMPILER_CONF_H
+#include <stdio.h>
+#include <string.h>
+#include "xmalloc.h"
 
-#include <math.h>
+void* xmalloc(size_t size)
+{
+	void *mem;
+	mem = malloc(size);
+	if (!mem) {
+		fprintf(stderr, "Allocation of %lu bytes failed\n",
+			(unsigned long)size);
+		exit(1);
+	}
+	return mem;
+}
 
-#ifdef USE_DOUBLES
+void xfree(void* mem)
+{
+	free(mem);
+}
 
-typedef double       real_t;
-#define R(x)         (x)
+char* xstrdup(const char* str)
+{
+	char* ret;
+	if (!str) return NULL;
+	ret = xmalloc(strlen(str) + 1);
+	strcpy(ret, str);
+	return ret;
+}
 
-#else
-
-typedef float        real_t;
-#define R(x)         (x##F)
-
-#endif
-
-#ifndef M_PI
-#define M_PI 3.1415926535897932384626433832795
-#endif
-
-
-#ifdef USE_INLINES
-
-#undef INLINE_MACRO
-#ifndef INLINE
-#if defined(MSC_VER)
-#define INLINE __inline
-#elif defined(inline) || defined(__cplusplus)
-#define INLINE inline
-#endif
-#endif
-
-#else
-
-#undef INLINE
-#define INLINE_MACRO
-
-#endif
-
-#ifdef __cplusplus
-#define C_DECL_BEGIN extern "C" {
-#define C_DECL_END }
-#else
-#define C_DECL_BEGIN
-#define C_DECL_END
-#endif
-
-#endif
 

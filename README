@@ -1,5 +1,5 @@
-The Iterative refocus Gimp plug-in can be used to sharpen images acquired by
-a defocused camera, blurred with gaussian or motion blur or any combination
+The Iterative refocus Gimp-2.0 plug-in can be used to sharpen images acquired
+by a defocused camera, blurred with gaussian or motion blur or any combination
 of these degradations. In cases of severe blur it produces much better
 results than plug-ins such as sharpen or unsharp mask.
 
@@ -8,14 +8,44 @@ smoothing used to remove the so called "ringing" effect introduced by edges in
 the image and effects introduced by noise. Two boundary conditions can be used
 (mirror boundaries / periodical boundaries). The algorithm is based on finding
 the minimum of the error function using Hopfield neural network.
-There are a few NOT nice features of this plug-in as well, namely its memory and
-CPU requirements.
+There are a few NOT nice features of this plug-in as well, namely its memory
+and CPU requirements.
 
 This plug-in has a preview that helps you select the best parameters.
 
-This version of the plug-in needs the Gtk+-1.2 libraries.
+This version of the plug-in needs the Gtk+-2.2.2 libraries or newer.
 
-I hope you like the plug-in. If you have any problems or requests please mail me.
+There is also commdan-line version (refocus-it-cmd) for users which cannot use
+GIMP or need batch processing. Type refocus-it-cmd --help for more information.
+
+---
+INSTALLATION
+
+If you have GNU environment, use
+
+ ./configure
+ make
+ make install
+
+See the file INSTALL for more details how to use configure, or type
+
+ ./configure --help
+
+If you do not have GNU environment, you can use only the command-line version.
+Use makefiles under cmd-version/ directory.
+In UNIX environment, use
+
+ make -f Makefile.unix 
+
+In Microsoft Windows, use
+
+ nmake -f Makefile.msc
+
+In other environments use other makefiles (probably self-made).
+
+---
+I hope you like the plug-in and the command-line version. If you have any
+problems or requests please mail me.
 
 Lukas Kunc <Lukas.Kunc@seznam.cz>
 

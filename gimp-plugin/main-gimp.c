@@ -17,31 +17,27 @@
  *
  */
 
+#define _GNU_SOURCE
+
 #include <gtk/gtk.h>
 #include <glib.h>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 #include <stdio.h>
-
-#ifdef HAVE_STDPLUGINS_INTL
-#include <libgimp/stdplugins-intl.h>
-#else
-#define _(x)		x
-#define N_(x)		x
-#define INIT_I18N_UI()	((void)0);
-#define INIT_I18N()	((void)0);
-#endif
-
 #include <ctype.h>
 #include <stdlib.h>
 #include <time.h>
+#include "compiler.h"
 #include "hopfield.h"
 #include "image.h"
 #include "lambda.h"
 #include "blur.h"
+#include "gettext.h"
 
-#define PLUG_IN_NAME		"plug_in_refocus_it"
-#define PLUG_IN_VERSION		"0.0.1 - 15 May 2003"
+#define _(String) gettext (String)
+#define gettext_noop(String) String
+#define N_(String) gettext_noop (String)
+
 #define PREVIEW_SIZE		128
 #define MOTION_ANGLE_DRA_SIZE	80
 #define MOTION_ANGLE_DRA_MIDDLE	(MOTION_ANGLE_DRA_SIZE / 2)
@@ -49,6 +45,9 @@
 #define LAMBDAMIN_MAX		100.0
 #define LAMBDAMIN_USABLE_MAX	0.999
 #define LAMBDA_MAX		10000.0
+
+#define RESPONSE_PREVIEW	1
+#define RESPONSE_RESET		2
 
 enum
 {
@@ -62,18 +61,25 @@ enum
 */
 
 static void query();
-static void run(gchar *name, gint nparams, GimpParam *param, gint *nreturn_vals, GimpParam **returm_vals);
+static void run(const gchar       *name,
+		gint               nparams,
+		const GimpParam   *param,
+		gint              *nreturn_vals,
+		GimpParam        **returm_vals);
+
 static void dialog_parameters_create();
 static void dialog_parameters_init();
 static void dialog_elements_update();
 static void dialog_elements_destroy();
+static void dialog_response(GtkWidget *widget, gint response_id, gpointer data);
+
 static void input_parameters_init();
 static void input_parameters_destroy();
 static void input_parameters_load();
 static void input_parameters_save();
-static void input_parameters_fetch_params(GimpParam *param);
+static void input_parameters_fetch_params(const GimpParam *param);
 static void input_parameters_fetch_dlg();
-static void image_parameters_init(GimpParam *param);
+static void image_parameters_init(const GimpParam *param);
 static void image_parameters_destroy();
 static void hopfield_data_init();
 static void hopfield_data_destroy();
@@ -284,7 +290,8 @@ static void destroy_callback( GtkWidget *widget, gpointer data )
 
 static void ok_callback( GtkWidget *widget, gpointer data )
 {
-	if ((gimp_drawable_is_rgb (image_parameters.drawable->id) || gimp_drawable_is_gray (image_parameters.drawable->id)))
+	if ((gimp_drawable_is_rgb (image_parameters.drawable->drawable_id)
+	  || gimp_drawable_is_gray (image_parameters.drawable->drawable_id)))
 	{
 		gtk_widget_set_sensitive (dialog_elements.dialog, FALSE);
 		input_parameters_fetch_dlg();
@@ -330,6 +337,10 @@ MAIN ()
 
 static void query ()
 {
+	gchar *location = NULL;
+	gchar *help_path = NULL;
+	gchar *help_uri = NULL;
+
 	static GimpParamDef	args[] =
 	{
 		{ GIMP_PDB_INT32,	 "run_mode",	"Interactive, non-interactive" },
@@ -349,17 +360,35 @@ static void query ()
 	};
 	static gint nargs = sizeof (args) / sizeof (args[0]);
 
-	gimp_install_procedure (PLUG_IN_NAME,
-		"Iterative refocus.",
-		"This plug-in iteratively refocuses a defocused image.",
+
+#ifdef HAVE_SETLOCALE
+	setlocale (LC_ALL, "");
+#endif
+#ifdef ENABLE_NLS
+	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+#ifdef HAVE_BIND_TEXTDOMAIN_CODESET
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+#endif
+	textdomain (GETTEXT_PACKAGE);
+#endif
+	asprintf(&location, "<Image>/Filters/Enhance/%s", _("Iterative refocus..."));
+	gimp_plugin_domain_register (PLUGIN_NAME, LOCALEDIR);
+	help_path = g_build_filename (DATADIR, "help", NULL);
+	help_uri = g_filename_to_uri (help_path, NULL, NULL);
+	g_free (help_path);
+	gimp_plugin_help_register ("http://developer.gimp.org/plug-in-template/help", help_uri);
+	gimp_install_procedure (PLUGIN_NAME,
+		_("Iterative refocus."),
+		_("This plug-in iteratively refocuses a defocused image."),
 		"Lukas Kunc <Lukas.Kunc@seznam.cz>",
 		"Lukas Kunc",
-		PLUG_IN_VERSION,
-		N_("<Image>/Filters/Enhance/Iterative refocus..."),
+		PLUGIN_VERSION,
+		location,
 		"RGB*, GRAY*",
 		GIMP_PLUGIN,
 		nargs, 0,
 		args, NULL);
+	free(location);
 }
 
 static void input_parameters_destroy()
@@ -383,15 +412,15 @@ static void input_parameters_init()
 
 static void input_parameters_load()
 {
-	gimp_get_data (PLUG_IN_NAME, &input_parameters);
+	gimp_get_data (PACKAGE_NAME, &input_parameters);
 }
 
 static void input_parameters_save()
 {
-	gimp_set_data (PLUG_IN_NAME, &input_parameters, sizeof (input_parameters));
+	gimp_set_data (PACKAGE_NAME, &input_parameters, sizeof (input_parameters));
 }
 
-static void input_parameters_fetch_params(GimpParam *param)
+static void input_parameters_fetch_params(const GimpParam *param)
 {
 	input_parameters.radius          = param[3].data.d_float;
 	input_parameters.gauss           = param[4].data.d_float;
@@ -483,10 +512,32 @@ static void dialog_elements_destroy()
 	dialog_elements.dialog = NULL;
 }
 
-static void image_parameters_init(GimpParam *param)
+
+static void dialog_response(GtkWidget *widget, gint response_id, gpointer data)
+{
+	switch (response_id)
+	{
+		case RESPONSE_PREVIEW:
+			preview_callback(widget, data);
+			break;
+		case GTK_RESPONSE_OK:
+			ok_callback(widget, data);
+			break;
+		case RESPONSE_RESET:
+			defaults_callback(widget, data);
+			break;
+		case GTK_RESPONSE_CANCEL:
+		default:
+			destroy_callback(widget, data);
+			break;
+	}
+}
+	
+
+static void image_parameters_init(const GimpParam *param)
 {
 	image_parameters.drawable = gimp_drawable_get (param[2].data.d_drawable);
-	gimp_drawable_mask_bounds (image_parameters.drawable->id,
+	gimp_drawable_mask_bounds (image_parameters.drawable->drawable_id,
 		&image_parameters.sel_x1,
 		&image_parameters.sel_y1,
 		&image_parameters.sel_x2,
@@ -494,7 +545,7 @@ static void image_parameters_init(GimpParam *param)
 
 	image_parameters.sel_width  = image_parameters.sel_x2 - image_parameters.sel_x1;
 	image_parameters.sel_height = image_parameters.sel_y2 - image_parameters.sel_y1;
-	image_parameters.img_bpp    = gimp_drawable_bpp (image_parameters.drawable->id);
+	image_parameters.img_bpp    = gimp_drawable_bpp (image_parameters.drawable->drawable_id);
 	image_parameters.size       = image_parameters.sel_width * image_parameters.sel_height;
 }
 
@@ -609,8 +660,8 @@ static void hopfield_data_save()
 		image_parameters.sel_width, image_parameters.sel_height);
 	/*  merge the shadow, update the drawable  */
 	gimp_drawable_flush (image_parameters.drawable);
-	gimp_drawable_merge_shadow (image_parameters.drawable->id, TRUE);
-	gimp_drawable_update (image_parameters.drawable->id,
+	gimp_drawable_merge_shadow (image_parameters.drawable->drawable_id, TRUE);
+	gimp_drawable_update (image_parameters.drawable->drawable_id,
 		image_parameters.sel_x1, image_parameters.sel_y1,
 		image_parameters.sel_width, image_parameters.sel_height);
 	g_free(image);
@@ -1083,15 +1134,16 @@ static gboolean dialog()
 	GtkWidget *vbox;
 
 	dialog_elements.dialog = dlg = gimp_dialog_new (_("Iterative Refocus"), "iterefocus",
+		NULL, 0,
 		gimp_standard_help_func, "filters/iterefocus.html",
-		GTK_WIN_POS_MOUSE,
-		FALSE, TRUE, FALSE,
-
-		_("OK"), ok_callback, NULL, NULL, NULL, TRUE, FALSE,
-		_("Reset"), defaults_callback, NULL, 1, NULL, FALSE, FALSE,
-		_("Preview"), preview_callback, NULL, 1, NULL, FALSE, FALSE,
-		_("Cancel"), destroy_callback, NULL, 1, NULL, FALSE, TRUE,
+		GTK_STOCK_OK, GTK_RESPONSE_OK,
+		GIMP_STOCK_RESET, RESPONSE_RESET, 
+		_("Preview"), RESPONSE_PREVIEW,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
 		NULL);
+
+	g_signal_connect (dlg, "response", G_CALLBACK (dialog_response), NULL);
+	g_signal_connect (dlg, "destroy", G_CALLBACK (destroy_callback), NULL);
 
 	preview_parameters_init();
 	dialog_parameters_create();
@@ -1211,6 +1263,8 @@ static void compute(int iterations)
 	{
 		final *= 3.0;
 	}
+
+	progress_bar_init();
 
 	hopfield_data_load();
 	preview_update();
@@ -1354,12 +1408,20 @@ static void compute(int iterations)
 }
 
 static void
-run (gchar *name, gint nparams, GimpParam *param, gint *nreturn_vals, GimpParam **return_vals)
+run (const gchar *name, gint nparams, const GimpParam *param, gint *nreturn_vals, GimpParam **return_vals)
 {
-	GimpRunModeType	run_mode; /* Current run mode */
-	GimpPDBStatusType status; /* Return status */
-	GimpParam *values; /* Return values */
-	gchar *title;
+	GimpRunMode		 run_mode; /* Current run mode */
+	GimpPDBStatusType	 status;   /* Return status */
+	GimpParam		*values;   /* Return values */
+	gchar			*title;
+
+#ifdef ENABLE_NLS
+	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+#ifdef HAVE_BIND_TEXTDOMAIN_CODESET
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+#endif
+	textdomain (GETTEXT_PACKAGE);
+#endif
 
 	input_parameters_init();
 	image_parameters_init(param);
@@ -1381,13 +1443,14 @@ run (gchar *name, gint nparams, GimpParam *param, gint *nreturn_vals, GimpParam 
 	* See how we will run
 	*/
 
-	if ((gimp_drawable_is_rgb (image_parameters.drawable->id) || gimp_drawable_is_gray (image_parameters.drawable->id)))
+	if ((gimp_drawable_is_rgb (image_parameters.drawable->drawable_id)
+	  || gimp_drawable_is_gray (image_parameters.drawable->drawable_id)))
 	{
 		switch (run_mode)
 		{
 		case GIMP_RUN_INTERACTIVE:
-			INIT_I18N_UI();
-			title = g_strdup_printf (_("Iterative Refocus - %s"), PLUG_IN_VERSION);
+			/*INIT_I18N_UI();*/
+			title = g_strdup_printf (_("Iterative Refocus - %s"), PACKAGE_VERSION);
 			gimp_ui_init (title, TRUE);
 			input_parameters_load();
 			if (!dialog ())
@@ -1402,7 +1465,7 @@ run (gchar *name, gint nparams, GimpParam *param, gint *nreturn_vals, GimpParam 
 			break;
 
 		case GIMP_RUN_NONINTERACTIVE:
-			INIT_I18N();
+			/*INIT_I18N();*/
 			if (nparams != 11) status = GIMP_PDB_CALLING_ERROR;
 			else
 			{
@@ -1412,7 +1475,7 @@ run (gchar *name, gint nparams, GimpParam *param, gint *nreturn_vals, GimpParam 
 			break;
 
 		case GIMP_RUN_WITH_LAST_VALS:
-			INIT_I18N();
+			/*INIT_I18N();*/
 			input_parameters_load();
 			compute (input_parameters.iterations);
 			gimp_displays_flush ();

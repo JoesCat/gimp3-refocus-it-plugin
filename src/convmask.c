@@ -109,7 +109,7 @@ convmask_t* convmask_normalize(convmask_t* convmask)
 void convmask_print(convmask_t* convmask, FILE* file)
 {
   int i, j;
-  fprintf(file, "CONVMASK:\n");
+  fprintf(file, "%s\n", "CONVMASK:");
   for (i = -convmask->radius; i <= convmask->radius; i++)
   {
     for (j = -convmask->radius; j <= convmask->radius; j++)
