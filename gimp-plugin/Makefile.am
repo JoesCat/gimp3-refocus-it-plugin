@@ -3,7 +3,7 @@
 BUILDDIR		= $(top_builddir)/src
 SRCDIR			= $(top_srcdir)/src
 
-INCLUDES                = -I$(top_srcdir)/gimp_plugin -I$(SRCDIR)
+INCLUDES                = -I$(top_srcdir)/gimp_plugin -I$(top_srcdir) -I$(SRCDIR)
 
 DEFS                    = -DLOCALEDIR=\"$(LOCALEDIR)\" \
 			  -DDATADIR=\""$(DATADIR)"\" \
