@@ -9,11 +9,13 @@ DEFS                    = -DLOCALEDIR=\"$(LOCALEDIR)\" \
 			  -DDATADIR=\""$(DATADIR)"\" \
 			  @DEFS@
 
-AM_CPPFLAGS			= @GIMP_CFLAGS@
+AM_CPPFLAGS		= @GIMP_CFLAGS@
 
 ## This is the GIMP plug-in
-bin_PROGRAMS			= gimp_plugin-refocus-it
-bindir				= $(GIMP_LIBDIR)/plug-ins
-gimp_plugin_refocus_it_SOURCES	= main-gimp.c
-gimp_plugin_refocus_it_LDADD	= $(BUILDDIR)/librefocus-it.a \
-				  @GIMP_LIBS@ -lm
+bin_PROGRAMS		= refocus-it
+bindir			= $(GIMP_LIBDIR)/plug-ins
+refocus_it_SOURCES	= main-gimp.c
+refocus_it_LDADD	= $(BUILDDIR)/librefocus-it.a \
+			  @GIMP_LIBS@ -lm
+
+			  nodist_EXTRA_DATA = .dep .lib

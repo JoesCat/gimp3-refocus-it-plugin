@@ -7,7 +7,7 @@ m4_define([plugin_name], [refocus-it])
 
 dnl These two define the plug-in version number
 m4_define([plugin_major_version], [2])
-m4_define([plugin_minor_version], [0])
+m4_define([plugin_minor_version], [1])
 
 m4_define([plugin_version], [plugin_major_version.plugin_minor_version])
 m4_define([plugin_package_name], [gimp3-refocus-it])
@@ -109,7 +109,7 @@ if test x"${have_gettext}" = xno; then
   AC_SEARCH_LIBS([intl],[have_gettext=yes],[
   AC_MSG_ERROR([ERROR: gettext() required! Please install locale, textdomain related Packages.])])
 fi
-GETTEXT_PACKAGE=gimp30-refocus-it
+GETTEXT_PACKAGE=gimp20-refocus-it
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [The gettext translation domain.])
 if test x"${have_gettext}" = xyes; then

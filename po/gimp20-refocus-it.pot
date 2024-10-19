@@ -1,114 +1,115 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# This file is distributed under the same license as the PACKAGE package.
-# Lukas Kunc <Lukas.Kunc@seznam.cz>, 2004.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the https://github.com/JoesCat/gimp3-refocus-it/issues package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: refocus-it 2.0.0\n"
+"Project-Id-Version: https://github.com/JoesCat/gimp3-refocus-it/issues 2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/JoesCat/gimp3-refocus-it/issues\n"
-"POT-Creation-Date: 2004-07-19 13:34+0200\n"
-"PO-Revision-Date: 2024-10-15 20:49-0700\n"
-"Last-Translator: Lukas Kunc <Lukas.Kunc@seznam.cz>\n"
-"Language-Team: Lukas Kunc <Lukas.Kunc@seznam.cz>\n"
-"Language: cs\n"
+"POT-Creation-Date: 2024-10-17 21:54-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../gimp-plugin/main-gimp.c:374
 msgid "Iterative refocus..."
-msgstr "Iterativní doostření..."
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:381
 msgid "Iterative refocus."
-msgstr "Iterativní doostření."
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:382
 msgid "This plug-in iteratively refocuses a defocused image."
-msgstr "Tento plug-in iterativně doostřuje rozostřený obrázek."
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:489
 msgid "mirror boundary"
-msgstr "zrcadlové okraje"
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:490
 msgid "periodical boundary"
-msgstr "periodické okraje"
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:846
 msgid "Degradation"
-msgstr "Degradace"
+msgstr ""
 
 #. blur radius
 #: ../gimp-plugin/main-gimp.c:851
 msgid "Radius:"
-msgstr "Poloměr rozostření:"
+msgstr ""
 
 #. gaussian blur
 #: ../gimp-plugin/main-gimp.c:861
 msgid "Gauss:"
-msgstr "Gaussovo rozostření:"
+msgstr ""
 
 #. motion blur
 #: ../gimp-plugin/main-gimp.c:871
 msgid "Motion size:"
-msgstr "Velikost pohybu:"
+msgstr ""
 
 #. motion angle
 #: ../gimp-plugin/main-gimp.c:881
 msgid "Motion angle:"
-msgstr "Úhel pohybu:"
+msgstr ""
 
 #. noise reduction
 #: ../gimp-plugin/main-gimp.c:891
 msgid "Noise:"
-msgstr "Šum:"
+msgstr ""
 
 #. iterations
 #: ../gimp-plugin/main-gimp.c:901 ../gimp-plugin/main-gimp.c:1113
 msgid "Iterations:"
-msgstr "Počet iterací:"
+msgstr ""
 
 #. boundary
 #: ../gimp-plugin/main-gimp.c:911
 msgid "Boundary:"
-msgstr "Okraje:"
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:935
 msgid "Area smoothing"
-msgstr "Vyhlazováni oblastí"
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:939
 msgid "Smoothness:"
-msgstr "Hladkost"
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:948
 msgid "Area size:"
-msgstr "Velikost oblasti:"
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:957
 msgid "Adaptive smoothing:"
-msgstr "Adaptivní vyhlazování:"
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:1040
 msgid "Motion direction"
-msgstr "Směr pohybu"
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:1129 ../gimp-plugin/main-gimp.c:1147
 msgid "Preview"
-msgstr "Náhled"
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:1142
 msgid "Iterative Refocus"
-msgstr "Iterativní doostření"
+msgstr ""
 
 #: ../gimp-plugin/main-gimp.c:1210
 msgid "Refocusing..."
-msgstr "Doostřuji..."
+msgstr ""
 
 #. INIT_I18N_UI();
 #: ../gimp-plugin/main-gimp.c:1459
 #, c-format
 msgid "Iterative Refocus - %s"
-msgstr "Iterativní doostření - %s"
+msgstr ""
