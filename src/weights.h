@@ -20,7 +20,6 @@
 #ifndef _WEIGHTS_H
 #define _WEIGHTS_H
 
-#include <stdio.h>
 #include "compiler.h"
 #include "convmask.h"
 
@@ -36,11 +35,13 @@ typedef struct {
 
 weights_t* weights_create(weights_t* weights, convmask_t* convmask);
 void weights_destroy(weights_t* weights);
-
-void weights_print(weights_t* weights, FILE* file);
-
 double weights_get(weights_t* weights, int x, int y);
-void weights_set(weights_t* weights, int x, int y, double value);
+
+#if defined(NDEBUG)
+#include <stdio.h>
+#include <stdlib.h>
+void weights_print(weights_t* weights, FILE* file);
+#endif
 
 C_DECL_END
 

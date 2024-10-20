@@ -17,7 +17,6 @@
  *
  */
 
-#include <stdlib.h>
 #include "lambda.h"
 
 static void get_variance_mirror(image_t* variance, image_t* img, double* pmin, double* pmax, int winsize) {
@@ -121,7 +120,7 @@ void lambda_set_nl(lambda_t* lambda, int nl) {
   lambda->nl = nl;
 }
 
-lambda_t* lambda_calculate_period(lambda_t* lambda, image_t* image) {
+static lambda_t* lambda_calculate_period(lambda_t* lambda, image_t* image) {
   image_t imgenh, *imgcal;
   image_t variance;
   double minvar, maxvar;
@@ -129,13 +128,20 @@ lambda_t* lambda_calculate_period(lambda_t* lambda, image_t* image) {
   int i, size;
 
   if (lambda->filter) {
-    imgcal = image_create_copyparam(&imgenh, image);
-    image_convolve_period(imgcal, image, lambda->filter);
+    if (!(imgcal = image_create_copyparam(&imgenh, image)))
+      return NULL;
+    if (!(image_convolve_period(imgcal, image, lambda->filter))) {
+      image_destroy(imgcal);
+      return NULL;
+    }
   } else {
     imgcal = image;
   }
 
-  image_create_copyparam(&variance, imgcal);
+  if (!(image_create_copyparam(&variance, imgcal))) {
+    if (imgcal == &imgenh) image_destroy(imgcal);
+    return NULL;
+  }
 
   get_variance_period(&variance, imgcal, &minvar, &maxvar, lambda->winsize);
 
@@ -155,7 +161,7 @@ lambda_t* lambda_calculate_period(lambda_t* lambda, image_t* image) {
   return lambda;
 }
 
-lambda_t* lambda_calculate_period_nl(lambda_t* lambda, image_t* image) {
+static lambda_t* lambda_calculate_period_nl(lambda_t* lambda, image_t* image) {
   image_t imgenh, *imgcal;
   image_t variance;
   double minvar, maxvar;
@@ -163,13 +169,20 @@ lambda_t* lambda_calculate_period_nl(lambda_t* lambda, image_t* image) {
   int i, size;
 
   if (lambda->filter) {
-    imgcal = image_create_copyparam(&imgenh, image);
-    image_convolve_period(imgcal, image, lambda->filter);
+    if (!(imgcal = image_create_copyparam(&imgenh, image)))
+      return NULL;
+    if (!(image_convolve_period(imgcal, image, lambda->filter))) {
+      image_destroy(imgcal);
+      return NULL;
+    }
   } else {
     imgcal = image;
   }
 
-  image_create_copyparam(&variance, imgcal);
+  if (!(image_create_copyparam(&variance, imgcal))) {
+    if (imgcal == &imgenh) image_destroy(imgcal);
+    return NULL;
+  }
 
   get_variance_period(&variance, imgcal, &minvar, &maxvar, lambda->winsize);
 
@@ -188,8 +201,7 @@ lambda_t* lambda_calculate_period_nl(lambda_t* lambda, image_t* image) {
   return lambda;
 }
 
-
-lambda_t* lambda_calculate_mirror(lambda_t* lambda, image_t* image) {
+static lambda_t* lambda_calculate_mirror(lambda_t* lambda, image_t* image) {
   image_t imgenh, *imgcal;
   image_t variance;
   double minvar, maxvar;
@@ -197,13 +209,20 @@ lambda_t* lambda_calculate_mirror(lambda_t* lambda, image_t* image) {
   int i, size;
 
   if (lambda->filter) {
-    imgcal = image_create_copyparam(&imgenh, image);
-    image_convolve_mirror(imgcal, image, lambda->filter);
+    if (!(imgcal = image_create_copyparam(&imgenh, image)))
+      return NULL;
+    if (!(image_convolve_period(imgcal, image, lambda->filter))) {
+      image_destroy(imgcal);
+      return NULL;
+    }
   } else {
     imgcal = image;
   }
 
-  image_create_copyparam(&variance, imgcal);
+  if (!(image_create_copyparam(&variance, imgcal))) {
+    if (imgcal == &imgenh) image_destroy(imgcal);
+    return NULL;
+  }
 
   get_variance_mirror(&variance, imgcal, &minvar, &maxvar, lambda->winsize);
 
@@ -223,7 +242,7 @@ lambda_t* lambda_calculate_mirror(lambda_t* lambda, image_t* image) {
   return lambda;
 }
 
-lambda_t* lambda_calculate_mirror_nl(lambda_t* lambda, image_t* image) {
+static lambda_t* lambda_calculate_mirror_nl(lambda_t* lambda, image_t* image) {
   image_t imgenh, *imgcal;
   image_t variance;
   double minvar, maxvar;
@@ -231,13 +250,20 @@ lambda_t* lambda_calculate_mirror_nl(lambda_t* lambda, image_t* image) {
   int i, size;
 
   if (lambda->filter) {
-    imgcal = image_create_copyparam(&imgenh, image);
-    image_convolve_mirror(imgcal, image, lambda->filter);
+    if (!(imgcal = image_create_copyparam(&imgenh, image)))
+      return NULL;
+    if (!(image_convolve_period(imgcal, image, lambda->filter))) {
+      image_destroy(imgcal);
+      return NULL;
+    }
   } else {
     imgcal = image;
   }
 
-  image_create_copyparam(&variance, imgcal);
+  if (!(image_create_copyparam(&variance, imgcal))) {
+    if (imgcal == &imgenh) image_destroy(imgcal);
+    return NULL;
+  }
 
   get_variance_mirror(&variance, imgcal, &minvar, &maxvar, lambda->winsize);
 
